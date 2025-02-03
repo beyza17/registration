@@ -1,0 +1,66 @@
+// BSplinePar (Optimized for Speed)
+
+(FixedInternalImagePixelType "float")
+(MovingInternalImagePixelType "float")
+
+(FixedImageDimension 3)
+(MovingImageDimension 3)
+
+(UseDirectionCosines "true")
+
+// **************** Main Components **************************
+
+(Registration "MultiMetricMultiResolutionRegistration")
+(Interpolator "BSplineInterpolator")
+(ResampleInterpolator "FinalBSplineInterpolator")
+(Resampler "DefaultResampler")
+
+(FixedImagePyramid "FixedSmoothingImagePyramid")
+(MovingImagePyramid "MovingSmoothingImagePyramid")
+
+(Optimizer "AdaptiveStochasticGradientDescent")
+(Transform "BSplineTransform")
+(Metric "AdvancedMattesMutualInformation")
+
+// ***************** Transformation **************************
+
+(FinalGridSpacingInVoxels 10 10 10) // Increased for faster runtime
+(GridSpacingSchedule 8 4 2)         // Reduced levels for efficiency
+
+(HowToCombineTransforms "Compose")
+
+// ******************* Similarity measure *********************
+
+(NumberOfHistogramBins 16)         // Reduced for faster computation
+
+(ErodeMask "false")
+(Metric0Weight 1.0)
+
+// ******************** Multiresolution **********************
+
+(NumberOfResolutions 3)            // Reduced from 4 to 3 levels
+(FixedImagePyramidSchedule 1 1 1  0 0 0  0 0 0)
+(MovingImagePyramidSchedule 1 1 1  0 0 0  0 0 0)
+
+// ******************* Optimizer ****************************
+
+(MaximumNumberOfIterations 500)    // Reduced to limit runtime
+(MaximumStepLength 0.03)           // Slightly larger steps
+
+// **************** Image sampling **********************
+
+(NumberOfSpatialSamples 1024)      // Reduced to decrease computation
+(NewSamplesEveryIteration "true")
+(ImageSampler "RandomCoordinate")
+
+// ************* Interpolation and Resampling ****************
+
+(BSplineInterpolationOrder 1)
+(FinalBSplineInterpolationOrder 3)
+
+(DefaultPixelValue 0)
+
+(WriteResultImage "true")
+
+(ResultImagePixelType "float")
+(ResultImageFormat "mhd")
