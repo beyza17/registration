@@ -301,8 +301,8 @@ def get_landmark(patient_num):
     """
 
 
-    input_fcsv = f"Training_data_2/cop1/data/NG41{patient_num}_Fiducial_template_ALL.fcsv"
-    output_txt = f"Training_data_2/cop1/data/NG41{patient_num}_Fiducial_template_ALL.txt"
+    input_fcsv = f"Training_data_5/cop1/data/NG25{patient_num}_Fiducial_template_ALL.fcsv"
+    output_txt = f"Training_data_5/cop1/data/NG25{patient_num}_Fiducial_template_ALL.txt"
     process_fcsv_to_txt(input_fcsv, output_txt)
   
    
@@ -313,11 +313,11 @@ def get_landmark(patient_num):
 
 def register(patient_num):
 
-    input_path = f"Training_data_2/cop1/data/NG41{patient_num}_Segments.seg.nrrd"  # Replace with your input file path
-    output_path = f"Training_data_2/cop1/data/NG41{patient_num}_mask.nrrd" # Replace with desired output path
+    input_path = f"Training_data_5/cop1/data/NG25{patient_num}_Segments.seg.nrrd"  # Replace with your input file path
+    output_path = f"Training_data_5/cop1/data/NG25{patient_num}_mask.nrrd" # Replace with desired output path
     exclude_label = 0  # Adjust to the label representing the background or first segment
     extract_all_objects_mask(input_path, output_path, exclude_label=exclude_label)
-    moved = f"Training_data_2/cop1/data/NG41{patient_num}_RCL5_masked.nrrd"  # Replace with your input file path
+    moved = f"Training_data_5/cop1/data/NG25{patient_num}_RCL5_masked.nrrd"  # Replace with your input file path
     output_dir = fr'par/cop{patient_num}'
     os.makedirs(output_dir, exist_ok=True)
    
@@ -325,25 +325,34 @@ def register(patient_num):
     return output_path,moved ,output_dir
 
 def transform(patient_num):
-    file_path = f"Training_data_2/cop1/data/NG4108_Fiducial_template_ALL.txt"  # Replace with your input file path
+    file_path = f"Training_data_5/cop1/data/NG2560_Fiducial_template_ALL.txt"  # Replace with your input file path
     total_number=98
     add_rows_to_file(file_path,total_number)
-    edited_file_path = f"Training_data_2/cop1/data/NG4108_Fiducial_template_ALL_edited.txt"  # Replace with your input file path
+    edited_file_path = f"Training_data_5/cop1/data/NG2560_Fiducial_template_ALL_edited.txt"  # Replace with your input file path
     output_dir = fr'par/cop{patient_num}/step2' #<---------------------------------
     transform_params = fr'par/cop{patient_num}/TransformParameters.1.txt'#<---------------------------------
     os.makedirs(output_dir, exist_ok=True)
     return edited_file_path, output_dir,transform_params
-
-def extract (patient_num):
-    output_dir = fr'outputpoints'
+def extract_without_gt (patient_num):
+    output_dir = fr'outputpoints2'
     os.makedirs(output_dir, exist_ok=True)
-    final_path=fr'par/cop{patient_num}/step2/NG41{patient_num}_outputpoints_final.txt'
+    final_path=fr'par/cop{patient_num}/step2/NG25{patient_num}_outputpoints_final.txt'
     extract_output_points(fr'par/cop{patient_num}/step2/outputpoints.txt', final_path)
-    output_file = fr'outputpoints/NG41{patient_num}_outputpoints_final.fcsv'  # Replace with your desired output file path
-    labels_file = f"Training_data_2/cop1/data/NG41{patient_num}_Fiducial_template_ALL.fcsv"
+    return final_path
+def extract_without_gt_2 (patient_num,final_path):
+    output_file = fr'outputpoints2/NG25{patient_num}_outputpoints_final.fcsv'  # Replace with your desired output file path
+    labels_file = f"Training_data_5/cop1/data/NG2560_Fiducial_template_ALL.fcsv"
+    convert_to_fcsv_with_labels(final_path, output_file, labels_file)
+def extract (patient_num):
+    output_dir = fr'outputpoints2'
+    os.makedirs(output_dir, exist_ok=True)
+    final_path=fr'par/cop{patient_num}/step2/NG25{patient_num}_outputpoints_final.txt'
+    extract_output_points(fr'par/cop{patient_num}/step2/outputpoints.txt', final_path)
+    output_file = fr'outputpoints2/NG25{patient_num}_outputpoints_final.fcsv'  # Replace with your desired output file path
+    labels_file = f"Training_data_5/cop1/data/NG25{patient_num}_Fiducial_template_ALL.fcsv"
     convert_to_fcsv_with_labels(final_path, output_file, labels_file)
 
-    input = f"Training_data_2/cop1/data/NG41{patient_num}_Fiducial_template_ALL.txt"
+    input = f"Training_data_5/cop1/data/NG25{patient_num}_Fiducial_template_ALL.txt"
     target_array_fixed = pd.read_csv(input, sep="\t", header=None)
     target_array_fixed = np.asanyarray(target_array_fixed)
     target_array_fixed = np.round(target_array_fixed)[:, :3].astype(int)
